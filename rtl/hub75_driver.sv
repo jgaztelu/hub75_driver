@@ -7,9 +7,9 @@ module  #(
     input logic clk,
     input logic rst_n,
 
-    // Frame buffer write interface
+    /* Frame buffer write interface */
     input logic [3*bpp_p-1:0] framebuf_wr_data, // Pixel data packed as {R,G,B}
-    input logic               framebuf_wr_en,
+    input logic               framebuf_wr_en,   // Write enable
 
     /* HUB75 outputs */
     // Control signals
