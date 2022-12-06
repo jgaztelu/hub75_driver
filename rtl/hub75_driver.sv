@@ -36,9 +36,9 @@ module hub75_driver #(
 );
 
   hub75_framebuf #(
-      .hpixel_p(64),
-      .vpixel_p(64),
-      .bpp_p   (8)
+      .hpixel_p(hpixel_p),
+      .vpixel_p(vpixel_p),
+      .bpp_p   (bpp_p)
   ) hub75_framebuf_i (
       .clk(clk),
       .rst_n(rst_n),
@@ -50,6 +50,39 @@ module hub75_driver #(
       /* Pixel read interface */
       .i_rd_addr('0),
       .o_rd_data()
+  );
+
+  hub75_display #(
+      .hpixel_p(hpixel_p),
+      .vpixel_p(vpixel_p),
+      .bpp_p   (bpp_p)
+  ) hub75_display_i (
+      .clk(clk),
+      .rst_n(rst_n),
+      /* Pixel read interface */
+      .o_rd_addr(),
+      .i_rd_data(),
+
+      /* HUB75 output interface */
+      // Control signals
+      .O_CLK(O_CLK),
+      .STB(STB),
+      .OE(OE),
+
+      // Row select
+      .A(A),
+      .B(B),
+      .C(C),
+      .D(D),
+
+      // RGB outputs
+      .R1(R1),
+      .R2(R2),
+      .G1(G1),
+      .G2(G2),
+      .B1(B1),
+      .B2(B2)
+
   );
 
 endmodule

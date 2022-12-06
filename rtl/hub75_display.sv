@@ -1,4 +1,4 @@
-module hub75_framebuf #(
+module hub75_display #(
     parameter hpixel_p = 64,    // Display width in pixels
     parameter vpixel_p = 64,    // Display height in pixels
     parameter    bpp_p = 8,     // Bits per pixel color channel
