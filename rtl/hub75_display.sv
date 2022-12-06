@@ -34,4 +34,41 @@ module hub75_display #(
     output logic B2
 );
 
+logic [$clog2(vpixel_p)-1:0] row_sel;
+logic                        clk_hub75;
+logic                        out_en;
+logic                        out_stb;
+
+typedef enum {IDLE, COLOR_TX, LATCH, WAIT} hub75_display_state_t;
+
+hub75_display_state_t disp_state;
+
+always_ff @(posedge clk) begin
+    if (!rst_n) begin
+        disp_state <= IDLE;
+        clk_hub75 <= 0;
+        row_sel <= '0;
+        out_en <= 0;
+        out_stb <= 0;
+    end else begin
+        case (disp_state)
+            IDLE: begin
+                clk_hub75 <= 0;
+                row_sel <= '0;
+                out_en <= '0;
+                out_stb <=
+            end
+
+            COLOR_TX: begin
+            end
+
+            LATCH: begin
+            end
+
+            WAIT: begin
+            end
+        endcase
+end
+
+
 endmodule
