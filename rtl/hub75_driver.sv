@@ -35,6 +35,9 @@ module hub75_driver #(
     output logic B2
 );
 
+  logic [addr_width_p-1:0] framebuf_rd_addr;
+  logic [2:0][bpp_p-1:0] framebuf_rd_data;
+
   hub75_framebuf #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
@@ -48,8 +51,8 @@ module hub75_driver #(
       .i_wr_en(i_framebuf_wr_en),
 
       /* Pixel read interface */
-      .i_rd_addr('0),
-      .o_rd_data()
+      .i_rd_addr(framebuf_rd_addr),
+      .o_rd_data(framebuf_rd_data)
   );
 
   hub75_display #(
@@ -60,8 +63,8 @@ module hub75_driver #(
       .clk(clk),
       .rst_n(rst_n),
       /* Pixel read interface */
-      .o_rd_addr(),
-      .i_rd_data(),
+      .o_rd_addr(framebuf_rd_addr),
+      .i_rd_data(framebuf_rd_data),
 
       /* HUB75 output interface */
       // Control signals

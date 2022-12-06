@@ -55,8 +55,8 @@ always_ff @(posedge clk) begin
             IDLE: begin
                 clk_hub75 <= 0;
                 row_sel <= '0;
-                out_en <= '0;
-                out_stb <=
+                out_en <= 0;
+                out_stb <= 0;
             end
 
             COLOR_TX: begin
@@ -68,6 +68,7 @@ always_ff @(posedge clk) begin
             WAIT: begin
             end
         endcase
+    end
 end
 
 
