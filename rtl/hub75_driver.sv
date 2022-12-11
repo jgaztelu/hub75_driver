@@ -2,6 +2,7 @@ module hub75_driver #(
     parameter  hpixel_p     = 64,                   // Display width in pixels
     parameter  vpixel_p     = 64,                   // Display height in pixels
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
+    parameter segments_p = 2,   // Number of display segments
     localparam frame_size_p = 64 * 64,
     localparam addr_width_p = $clog2(frame_size_p)
 ) (
@@ -36,12 +37,13 @@ module hub75_driver #(
 );
 
   logic [addr_width_p-1:0] framebuf_rd_addr;
-  logic [2:0][bpp_p-1:0] framebuf_rd_data;
+  logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
 
   hub75_framebuf #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
-      .bpp_p   (bpp_p)
+      .bpp_p   (bpp_p),
+      .segments_p(segments_p)
   ) hub75_framebuf_i (
       .clk(clk),
       .rst_n(rst_n),
@@ -58,7 +60,9 @@ module hub75_driver #(
   hub75_display #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
-      .bpp_p   (bpp_p)
+      .bpp_p   (bpp_p),
+      .segments_p(segments_p)
+
   ) hub75_display_i (
       .clk(clk),
       .rst_n(rst_n),

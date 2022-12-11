@@ -2,6 +2,7 @@ module hub75_display #(
     parameter hpixel_p = 64,    // Display width in pixels
     parameter vpixel_p = 64,    // Display height in pixels
     parameter    bpp_p = 8,     // Bits per pixel color channel
+    parameter segments_p = 2,   // Number of display segments
     localparam frame_size_p = 64*64,
     localparam addr_width_p = $clog2(frame_size_p)
 ) (
@@ -9,9 +10,11 @@ module hub75_display #(
     input logic clk,
     input logic rst_n,
 
+    // Enable
+    input logic i_enable,
     /* Pixel read interface */
     output logic [addr_width_p-1:0] o_rd_addr,
-    input logic [2:0][bpp_p-1:0] i_rd_data,
+    input logic [segments_p-1:0][2:0][bpp_p-1:0] i_rd_data,
 
     /* HUB75 output interface */
     // Control signals
@@ -34,42 +37,136 @@ module hub75_display #(
     output logic B2
 );
 
-logic [$clog2(vpixel_p)-1:0] row_sel;
-logic                        clk_hub75;
-logic                        out_en;
-logic                        out_stb;
+  logic [$clog2(vpixel_p)-1:0] row_sel;  // Row select
+  logic                        clk_hub75;  // Output clock
+  logic                        out_en;  // Output enable, used for display blanking
+  logic                        out_stb;  // Strobe/latch signal
 
-typedef enum {IDLE, COLOR_TX, LATCH, WAIT} hub75_display_state_t;
+  // Row and column counters
+  logic [$clog2(hpixel_p)-1:0] hcount;
+  logic [$clog2(vpixel_p)-1:0] vcount;
 
-hub75_display_state_t disp_state;
+  logic [$clog2(2**bpp_p)-1:0] wait_cnt;
 
-always_ff @(posedge clk) begin
+  logic [   $clog2(bpp_p)-1:0] pixel_bit;  // Current bit to shift out
+
+  logic [segments_p-1:0][bpp_p-1:0] r, g, b;  // Register RGB pixels from framebuf
+  logic [segments_p-1:0] r_out, g_out, b_out;  // Output RGB bits
+
+  typedef enum {
+    IDLE,
+    PREFETCH,
+    COLOR_TX,
+    LATCH,
+    WAIT
+  } hub75_display_state_t;
+
+  hub75_display_state_t disp_state;
+
+  always_ff @(posedge clk) begin
     if (!rst_n) begin
-        disp_state <= IDLE;
-        clk_hub75 <= 0;
-        row_sel <= '0;
-        out_en <= 0;
-        out_stb <= 0;
+      disp_state <= IDLE;
+      clk_hub75 <= 0;
+      row_sel <= '0;
+      out_en <= 0;
+      out_stb <= 0;
+      hcount <= '0;
+      vcount <= '0;
+      wait_cnt <= '0;
+      pixel_bit <= '0;
+      r <= '0;
+      g <= '0;
+      b <= '0;
+      r_out <= 0;
+      g_out <= 0;
+      b_out <= 0;
     end else begin
-        case (disp_state)
-            IDLE: begin
-                clk_hub75 <= 0;
-                row_sel <= '0;
-                out_en <= 0;
-                out_stb <= 0;
+      case (disp_state)
+        IDLE: begin
+          clk_hub75 <= 0;
+          row_sel <= '0;
+          out_en <= 0;
+          out_stb <= 0;
+          hcount <= '0;
+          vcount <= '0;
+          wait_cnt <= '0;
+          pixel_bit <= '0;
+          r <= '0;
+          g <= '0;
+          b <= '0;
+          r_out <= 0;
+          g_out <= 0;
+          b_out <= 0;
+          o_rd_addr <= '0;
+          if (i_enable) begin
+            disp_state <= PREFETCH;
+          end
+        end
+
+        PREFETCH: begin
+            disp_state <= COLOR_TX;
+            // Prefetch first pixel
+            for (int i = 0; i < segments_p; i++) begin
+              r[i] <= i_rd_data[i][0];
+              g[i] <= i_rd_data[i][1];
+              b[i] <= i_rd_data[i][2];
+            end
+            hcount <= hcount + 1;
+        end
+
+        COLOR_TX: begin
+          if (hcount < hpixel_p-1) begin
+            // Shift data out for all segments
+            for (int i = 0; i < segments_p; i++) begin
+              r_out[i] <= r[i][pixel_bit];
+              g_out[i] <= g[i][pixel_bit];
+              b_out[i] <= b[i][pixel_bit];
             end
 
-            COLOR_TX: begin
+            // Fetch next pixel
+            for (int i = 0; i < segments_p; i++) begin
+              r[i] <= i_rd_data[i][0];
+              g[i] <= i_rd_data[i][1];
+              b[i] <= i_rd_data[i][2];
             end
+            o_rd_addr <= vcount * hpixel_p + hcount;
+            hcount <= hcount + 1;
+          end else begin
+            // Blank display before latching
+            out_en <= 0;
+            disp_state <= LATCH;
+          end
+        end
 
-            LATCH: begin
-            end
+        LATCH: begin
+            out_stb <= 1;
+            row_sel <= vcount;
+            disp_state <= WAIT;
+        end
 
-            WAIT: begin
+        WAIT: begin
+            out_stb <= 0;
+            out_en <= 1;
+            if (wait_cnt < 2**pixel_bit) begin
+                wait_cnt <= wait_cnt + 1;
+            end else begin
+                if (pixel_bit == bpp_p-1) begin
+                    if (vcount == vpixel_p-1) begin
+                        disp_state <= IDLE;
+                    end else begin
+                        vcount <= vcount + 1;
+                        pixel_bit <= '0;
+                        disp_state <= PREFETCH;
+                    end
+                end else begin
+                    pixel_bit <= pixel_bit + 1;
+                    disp_state <= PREFETCH;
+                end
             end
-        endcase
+        end
+      endcase
     end
-end
+  end
 
 
 endmodule
