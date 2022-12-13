@@ -184,5 +184,19 @@ module hub75_display #(
     end
   end
 
+// Assign display outputs
+assign O_CLK = clk_hub75;
+assign STB = out_stb;
+assign OE = out_en;
+assign A = row_sel[3];
+assign B = row_sel[2];
+assign C = row_sel[1];
+assign D = row_sel[0];
 
+assign R1 = r_out[0];
+assign R2 = r_out[1];
+assign G1 = g_out[0];
+assign G2 = g_out[1];
+assign B1 = b_out[0];
+assign B2 = b_out[1];
 endmodule
