@@ -22,10 +22,13 @@ module hub75_framebuf #(
 
   logic [frame_size_p-1:0][3*bpp_p-1:0] frame_buf;
 
-  always_ff @(posedge clk) begin
-    if (i_wr_en) frame_buf[i_wr_addr] <= i_wr_data;
+  // always_ff @(posedge clk) begin
+  //   if (i_wr_en) frame_buf[i_wr_addr] <= i_wr_data;
 
-    o_rd_data <= frame_buf[i_rd_addr];
+  //   o_rd_data <= frame_buf[i_rd_addr];
+  // end
+  always_ff @(posedge clk) begin
+    o_rd_data <= {4{i_rd_addr}};
   end
 
 

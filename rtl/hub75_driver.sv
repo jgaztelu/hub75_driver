@@ -10,6 +10,8 @@ module hub75_driver #(
     input logic clk,
     input logic rst_n,
 
+    input logic i_enable,
+
     /* Frame buffer write interface */
     input logic [addr_width_p-1:0] i_framebuf_wr_addr,  // Framebuf write address
     input logic [     3*bpp_p-1:0] i_framebuf_wr_data,  // Pixel data packed as {R,G,B}
@@ -66,6 +68,9 @@ module hub75_driver #(
   ) hub75_display_i (
       .clk(clk),
       .rst_n(rst_n),
+
+      //Enable
+      .i_enable(i_enable),
       /* Pixel read interface */
       .o_rd_addr(framebuf_rd_addr),
       .i_rd_data(framebuf_rd_data),

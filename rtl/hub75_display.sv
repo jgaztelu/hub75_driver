@@ -106,36 +106,50 @@ module hub75_display #(
         PREFETCH: begin
             disp_state <= COLOR_TX;
             // Prefetch first pixel
+            // for (int i = 0; i < segments_p; i++) begin
+            //   r[i] <= i_rd_data[i][0];
+            //   g[i] <= i_rd_data[i][1];
+            //   b[i] <= i_rd_data[i][2];
+            // end
+
             for (int i = 0; i < segments_p; i++) begin
-              r[i] <= i_rd_data[i][0];
-              g[i] <= i_rd_data[i][1];
-              b[i] <= i_rd_data[i][2];
+              r_out[i] <= i_rd_data[i][0][pixel_bit];
+              g_out[i] <= i_rd_data[i][1][pixel_bit];
+              b_out[i] <= i_rd_data[i][2][pixel_bit];
             end
             hcount <= hcount + 1;
         end
 
         COLOR_TX: begin
           if (hcount < hpixel_p-1) begin
+            // // Shift data out for all segments
+            // for (int i = 0; i < segments_p; i++) begin
+            //   r_out[i] <= r[i][pixel_bit];
+            //   g_out[i] <= g[i][pixel_bit];
+            //   b_out[i] <= b[i][pixel_bit];
+            // end
+
             // Shift data out for all segments
             for (int i = 0; i < segments_p; i++) begin
-              r_out[i] <= r[i][pixel_bit];
-              g_out[i] <= g[i][pixel_bit];
-              b_out[i] <= b[i][pixel_bit];
+              r_out[i] <= i_rd_data[i][0][pixel_bit];
+              g_out[i] <= i_rd_data[i][1][pixel_bit];
+              b_out[i] <= i_rd_data[i][2][pixel_bit];
             end
 
-            // Fetch next pixel
-            for (int i = 0; i < segments_p; i++) begin
-              r[i] <= i_rd_data[i][0];
-              g[i] <= i_rd_data[i][1];
-              b[i] <= i_rd_data[i][2];
-            end
-            o_rd_addr <= vcount * hpixel_p + hcount;
+            // // Fetch next pixel
+            // for (int i = 0; i < segments_p; i++) begin
+            //   r[i] <= i_rd_data[i][0];
+            //   g[i] <= i_rd_data[i][1];
+            //   b[i] <= i_rd_data[i][2];
+            // end
             hcount <= hcount + 1;
           end else begin
             // Blank display before latching
             out_en <= 0;
             disp_state <= LATCH;
           end
+          o_rd_addr <= vcount * hpixel_p + hcount;
+
         end
 
         LATCH: begin
@@ -147,15 +161,17 @@ module hub75_display #(
         WAIT: begin
             out_stb <= 0;
             out_en <= 1;
-            if (wait_cnt < 2**pixel_bit) begin
+            if (wait_cnt < 2**pixel_bit-1) begin
                 wait_cnt <= wait_cnt + 1;
             end else begin
+                wait_cnt <= '0;
                 if (pixel_bit == bpp_p-1) begin
                     if (vcount == vpixel_p-1) begin
                         disp_state <= IDLE;
                     end else begin
                         vcount <= vcount + 1;
                         pixel_bit <= '0;
+                        hcount <= '0;
                         disp_state <= PREFETCH;
                     end
                 end else begin
