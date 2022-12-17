@@ -10,8 +10,9 @@ module hub75_display #(
     input logic clk,
     input logic rst_n,
 
-    // Enable
+    // Config inputs
     input logic i_enable,
+    input logic [3:0] i_clk_div,
     /* Pixel read interface */
     output logic [addr_width_p-1:0] o_rd_addr,
     input logic [segments_p-1:0][2:0][bpp_p-1:0] i_rd_data,
@@ -53,6 +54,8 @@ module hub75_display #(
   logic [segments_p-1:0][bpp_p-1:0] r, g, b;  // Register RGB pixels from framebuf
   logic [segments_p-1:0] r_out, g_out, b_out;  // Output RGB bits
 
+  logic [3:0] clk_div_cnt;                  // Clock divider counter
+
   typedef enum {
     IDLE,
     PREFETCH,
@@ -66,7 +69,6 @@ module hub75_display #(
   always_ff @(posedge clk) begin
     if (!rst_n) begin
       disp_state <= IDLE;
-      clk_hub75 <= 0;
       row_sel <= '0;
       out_en <= 0;
       out_stb <= 0;
@@ -83,7 +85,6 @@ module hub75_display #(
     end else begin
       case (disp_state)
         IDLE: begin
-          clk_hub75 <= 0;
           row_sel <= '0;
           out_en <= 0;
           out_stb <= 0;
@@ -184,10 +185,23 @@ module hub75_display #(
     end
   end
 
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      clk_div_cnt <= '0;
+      clk_hub75 <= 0;
+    end else begin
+      if (clk_div_cnt == i_clk_div) begin
+        clk_div_cnt <= '0;
+        clk_hub75 <= !clk_hub75;
+      end else begin
+        clk_div_cnt <= clk_div_cnt + 1;
+      end    
+  end
+
 // Assign display outputs
 assign O_CLK = clk_hub75;
 assign STB = out_stb;
-assign OE = out_en;
+assign OE = !out_en;
 assign A = row_sel[3];
 assign B = row_sel[2];
 assign C = row_sel[1];
