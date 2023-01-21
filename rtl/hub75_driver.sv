@@ -42,12 +42,30 @@ module hub75_driver #(
   logic [addr_width_p-1:0] framebuf_rd_addr;
   logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
 
-  hub75_framebuf #(
+//   hub75_framebuf #(
+//       .hpixel_p(hpixel_p),
+//       .vpixel_p(vpixel_p),
+//       .bpp_p   (bpp_p),
+//       .segments_p(segments_p)
+//   ) hub75_framebuf_i (
+//       .clk(clk),
+//       .rst_n(rst_n),
+//       /* Write interface */
+//       .i_wr_addr(i_framebuf_wr_addr),
+//       .i_wr_data(i_framebuf_wr_data),
+//       .i_wr_en(i_framebuf_wr_en),
+
+//       /* Pixel read interface */
+//       .i_rd_addr(framebuf_rd_addr),
+//       .o_rd_data(framebuf_rd_data)
+//   );
+
+    hub75_test_bars #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
       .bpp_p   (bpp_p),
       .segments_p(segments_p)
-  ) hub75_framebuf_i (
+    ) hub75_test_bars_i (
       .clk(clk),
       .rst_n(rst_n),
       /* Write interface */
