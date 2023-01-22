@@ -3,7 +3,7 @@ module hub75_driver #(
     parameter  vpixel_p     = 64,                   // Display height in pixels
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
     parameter segments_p = 2,   // Number of display segments
-    localparam frame_size_p = 64 * 64,
+    localparam frame_size_p = hpixel_p * vpixel_p,
     localparam addr_width_p = $clog2(frame_size_p)
 ) (
     // Clock and reset
@@ -29,6 +29,7 @@ module hub75_driver #(
     output logic B,
     output logic C,
     output logic D,
+    output logic E,
 
     // RGB outputs
     output logic R1,
@@ -106,6 +107,7 @@ module hub75_driver #(
       .B(B),
       .C(C),
       .D(D),
+      .E(E),
 
       // RGB outputs
       .R1(R1),
