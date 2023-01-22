@@ -28,6 +28,7 @@ module hub75_display #(
     output logic B,
     output logic C,
     output logic D,
+    output logic E,
 
     // RGB outputs
     output logic R1,
@@ -218,10 +219,11 @@ module hub75_display #(
   assign O_CLK = clk_hub75;
   assign STB = out_stb;
   assign OE = !out_en;
-  assign A = row_sel[3];
-  assign B = row_sel[2];
-  assign C = row_sel[1];
-  assign D = row_sel[0];
+  assign A = row_sel[4];
+  assign B = row_sel[3];
+  assign C = row_sel[2];
+  assign D = row_sel[1];
+  assign E = row_sel[0];
 
   assign R1 = r_out[0];
   assign R2 = r_out[1];
