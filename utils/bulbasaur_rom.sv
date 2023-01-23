@@ -1,11 +1,11 @@
 module bulbasaur_rom #(
-parameter hpixel_p = 63,
-            parameter vpixel_p = 63,
-            parameter bpp_p = 8,
-            parameter segments_p = 2,
-            localparam frame_size_p = hpixel_p*vpixel_p,
-            localparam $clog2(frame_size_p)
-            )(
+	parameter hpixel_p = 64,
+    parameter vpixel_p = 64,
+    parameter bpp_p = 8,
+    parameter segments_p = 2,
+    localparam frame_size_p = hpixel_p*vpixel_p,
+    localparam $clog2(frame_size_p)
+    ) (
 
 // Clock and reset
         input logic clk,
@@ -16,15 +16,6 @@ parameter hpixel_p = 63,
         output logic [segments_p-1:0][2:0][bpp_p-1:0] o_rd_data
         );
 
-
-        always_ff @(posedge clk) begin
-            if (!rst_n) begin
-                o_rd_data <= '0;
-            end else begin
-                o_rd_data[0] <= frame_buf[i_rd_addr];
-                o_rd_data[1] <= frame_buf[i_rd_addr+frame_size_p/2];
-            end
-        end
 const logic [3*bpp_p-1:0] bulbasaur_rom_buf [frame_size_p-1:0] = '{
 24'd8454273,
 24'd8454273,
@@ -3996,4 +3987,13 @@ const logic [3*bpp_p-1:0] bulbasaur_rom_buf [frame_size_p-1:0] = '{
 24'd8323199,
 24'd8323199,
 };
+
+        always_ff @(posedge clk) begin
+            if (!rst_n) begin
+                o_rd_data <= '0;
+            end else begin
+                o_rd_data[0] <= bulbasaur_rom_buf[i_rd_addr];
+                o_rd_data[1] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2];
+            end
+        end
 endmodule
