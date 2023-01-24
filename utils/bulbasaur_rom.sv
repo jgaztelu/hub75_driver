@@ -3988,16 +3988,12 @@ localparam [frame_size_p-1:0][3*bpp_p-1:0] bulbasaur_rom_buf = {
 24'd8323199};
 
     always_ff @(posedge clk) begin
-        if (!rst_n) begin
-            o_rd_data <= '0;
-        end else begin
-            o_rd_data[0][2] <= bulbasaur_rom_buf[i_rd_addr][23:16];
-            o_rd_data[0][1] <= bulbasaur_rom_buf[i_rd_addr][15:8];
-            o_rd_data[0][0] <= bulbasaur_rom_buf[i_rd_addr][7:0];
+        o_rd_data[0][2] <= bulbasaur_rom_buf[i_rd_addr][23:16];
+        o_rd_data[0][1] <= bulbasaur_rom_buf[i_rd_addr][15:8];
+        o_rd_data[0][0] <= bulbasaur_rom_buf[i_rd_addr][7:0];
 
-            o_rd_data[1][2] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][23:16];
-            o_rd_data[1][1] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][15:8];
-            o_rd_data[1][0] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][7:0];
-        end
+        o_rd_data[1][2] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][23:16];
+        o_rd_data[1][1] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][15:8];
+        o_rd_data[1][0] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][7:0];
     end
 endmodule
