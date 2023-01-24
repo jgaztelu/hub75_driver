@@ -22,13 +22,13 @@ width, height = crop.size
 
 
 sv_header = f"module {rom_name} #(\n"
-parameters = f"""parameter hpixel_p = {width},
-            parameter vpixel_p = {height},
-            parameter bpp_p = 8,
-            parameter segments_p = {segments},
-            localparam frame_size_p = hpixel_p*vpixel_p,
-            localparam $clog2(frame_size_p)
-            )(\n\n"""
+parameters = f"""\tparameter hpixel_p = {width+1},
+    parameter vpixel_p = {height+1},
+    parameter bpp_p = 8,
+    parameter segments_p = {segments},
+    localparam frame_size_p = hpixel_p*vpixel_p,
+    localparam addr_width_p = $clog2(frame_size_p)
+    ) (\n\n"""
 
 ports = """// Clock and reset
         input logic clk,
@@ -39,23 +39,24 @@ ports = """// Clock and reset
         output logic [segments_p-1:0][2:0][bpp_p-1:0] o_rd_data
         );\n\n"""
 
-constant = f"const logic [3*bpp_p-1:0] {rom_name}_buf [frame_size_p-1:0] = '{{\n"
+constant = f"localparam {rom_name}_buf [frame_size_p-1:0] = {{\n"
 print(constant)
 for v in range(height):
     for h in range(width):
         pix = crop.getpixel((h,v))
         pix_num = pix[0]*2**16 + pix[1] * 2**8 + pix[2]
-        constant = constant + f"24'd{pix_num},\n"
+        constant = constant + f"{pix_num},\n"
 
+constant = constant[0:len(constant)-2] # Remove last comma
 constant += '};\n'
 
-logic = """
+logic = f"""
         always_ff @(posedge clk) begin
             if (!rst_n) begin
                 o_rd_data <= '0;
             end else begin
-                o_rd_data[0] <= frame_buf[i_rd_addr];
-                o_rd_data[1] <= frame_buf[i_rd_addr+frame_size_p/2];
+                o_rd_data[0] <= {rom_name}_buf[i_rd_addr];
+                o_rd_data[1] <= {rom_name}_buf[i_rd_addr+frame_size_p/2];
             end
         end\n"""
 
@@ -67,8 +68,8 @@ f = open(rom_path,"w")
 f.write(sv_header)
 f.write(parameters)
 f.write(ports)
-f.write(logic)
 f.write(constant)
+f.write(logic)
 f.write(endmodule)
 
 
