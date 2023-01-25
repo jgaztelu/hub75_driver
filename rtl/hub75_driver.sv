@@ -61,30 +61,30 @@ module hub75_driver #(
 //       .o_rd_data(framebuf_rd_data)
 //   );
 
-  //   hub75_test_bars #(
-  //     .hpixel_p(hpixel_p),
-  //     .vpixel_p(vpixel_p),
-  //     .bpp_p   (bpp_p),
-  //     .segments_p(segments_p)
-  //   ) hub75_test_bars_i (
-  //     .clk(clk),
-  //     .rst_n(rst_n),
-  //     /* Write interface */
-  //     .i_wr_addr(i_framebuf_wr_addr),
-  //     .i_wr_data(i_framebuf_wr_data),
-  //     .i_wr_en(i_framebuf_wr_en),
+//     hub75_test_bars #(
+//       .hpixel_p(hpixel_p),
+//       .vpixel_p(vpixel_p),
+//       .bpp_p   (bpp_p),
+//       .segments_p(segments_p)
+//     ) hub75_test_bars_i (
+//       .clk(clk),
+//       .rst_n(rst_n),
+//       /* Write interface */
+//       .i_wr_addr(i_framebuf_wr_addr),
+//       .i_wr_data(i_framebuf_wr_data),
+//       .i_wr_en(i_framebuf_wr_en),
 
-  //     /* Pixel read interface */
-  //     .i_rd_addr(framebuf_rd_addr),
-  //     .o_rd_data(framebuf_rd_data)
-  // );
+//       /* Pixel read interface */
+//       .i_rd_addr(framebuf_rd_addr),
+//       .o_rd_data(framebuf_rd_data)
+//   );
 
       bulbasaur_rom #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
       .bpp_p   (bpp_p),
       .segments_p(segments_p)
-    ) hub75_test_bars_i (
+    ) bulbasaur_rom_i (
       .clk(clk),
       .rst_n(rst_n),
 
