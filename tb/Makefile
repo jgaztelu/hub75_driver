@@ -1,10 +1,13 @@
 # Makefile
 RTLDIR := $(PROJDIR)/rtl
+UTILSDIR := $(PROJDIR)/utils
 # defaults
 SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
+export PYTHONPATH := $(PROJDIR)/tb/tests
 
-VERILOG_SOURCES += 	$(RTLDIR)/hub75_framebuf.sv \
+VERILOG_SOURCES += 	$(UTILSDIR)/bulbasaur_rom.sv \
+					$(RTLDIR)/hub75_framebuf.sv \
 					$(RTLDIR)/hub75_test_bars.sv \
 					$(RTLDIR)/hub75_display.sv \
 					$(RTLDIR)/hub75_driver.sv
