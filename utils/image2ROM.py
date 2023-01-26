@@ -1,9 +1,12 @@
 from PIL import Image
 import os
 
-img_folder = os.getcwd() + '/utils/test_images/'
-rom_folder = os.getcwd() + '/utils/'
-print(img_folder)
+cur_path = os.path.dirname(os.path.realpath(__file__))
+print(cur_path)
+print(os.path.basename(cur_path))
+print(os.path.dirname(cur_path))
+img_folder = cur_path + '/test_images/'
+rom_folder = cur_path + '/'
 
 img_file = 'bulbasaur.webp'
 rom_name = 'bulbasaur_rom'
@@ -20,7 +23,8 @@ crop = im.crop((0,0,63,63))
 crop.save((img_folder + 'bulbasaur_crop_64x64.png'))
 width, height = crop.size
 
-
+rom_data = crop.getdata()
+print(rom_data[0])
 sv_header = f"module {rom_name} #(\n"
 parameters = f"""\tparameter hpixel_p = {width+1},
     parameter vpixel_p = {height+1},
@@ -40,14 +44,16 @@ ports = """// Clock and reset
         );\n\n"""
 
 constant = f"localparam [frame_size_p-1:0][3*bpp_p-1:0] {rom_name}_buf = {{\n"
-print(constant)
-for v in range(height):
-    for h in range(width):
-        pix = crop.getpixel((h,v))
-        pix_num = pix[0]*2**16 + pix[1] * 2**8 + pix[2]
-        constant = constant + f"24'd{pix_num},\n"
 
-constant = constant[0:len(constant)-2] # Remove last comma
+
+# print(constant)
+# for v in range(height):
+#     for h in range(width):
+#         pix = crop.getpixel((h,v))
+#         pix_num = pix[0]#pix[2]*2**16 + pix[1] * 2**8 + pix[0]
+#         constant = constant + f"24'd{pix_num},\n"
+
+# constant = constant[0:len(constant)-2] # Remove last comma
 constant += '};\n'
 
 logic = f"""
