@@ -38,10 +38,15 @@ write_checkpoint -force $outputDir/post_synth.dcp
 report_timing_summary -file $outputDir/post_synth_timing_summary.report_timing_summary
 report_utilization -file $outputDir/post_synth_util.rpt
 
+# Add ILA
+source add_ila.tcl
+
 #run optimization
 opt_design
 place_design
 report_clock_utilization -file $outputDir/clock_util.rpt
+
+
 
 #get timing violations and run optimizations if needed
 if {[get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup]] < 0} {
@@ -60,7 +65,7 @@ report_timing_summary -file $outputDir/post_route_timing_summary.rpt
 report_power -file $outputDir/post_route_power.rpt
 report_drc -file $outputDir/post_imp_drc.rpt
 write_verilog -force $outputDir/hub75_zynq.v -mode timesim -sdf_anno true
-write_bitstream -force $outputDir/bitstream.bit
+#write_bitstream -force $outputDir/bitstream.bit
 
 # Export HW platform for Vitis
 write_hw_platform -fixed -include_bit -force -file $outputDir/hub75_hw.xsa
