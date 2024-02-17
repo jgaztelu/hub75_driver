@@ -1,1 +1,5 @@
 .vscode/*
+tb/sim_build
+obj_dir
+*.fst
+*.vcd

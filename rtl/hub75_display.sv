@@ -172,7 +172,7 @@ module hub75_display #(
             end else begin
               wait_cnt <= '0;
               if (pixel_bit == bpp_p - 1) begin
-                if (vcount == vpixel_p - 1) begin
+                if (vcount == vpixel_p/segments_p - 1) begin
                   disp_state <= IDLE;
                 end else begin
                   vcount <= vcount + 1;
