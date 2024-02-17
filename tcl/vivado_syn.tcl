@@ -1,3 +1,4 @@
+#TODO: Cleanup unused lines and change hardcoded paths with references to variables
 #Define target part and create output directory
 set partNum xc7z020clg400-1
 set outputDir ./work
@@ -25,13 +26,17 @@ read_verilog -verbose -sv [ glob $utilsDir/*.sv]
 read_vhdl -verbose [ glob $rtlDir/*.vhd]
 read_xdc ../constraints/system.xdc
 
-source zynq_hub75.tcl
-generate_target all [ get_files ./.srcs/sources_1/bd/zynq_hub75/zynq_hub75.bd ]
+source zynq_hub75_new.tcl
+generate_target all [ get_files ./gen_ip/zynq_hub75/zynq_hub75.bd ]
+#generate_target all [ get_ips]
+#read_bd ./gen_ip/zynq_hub75/zynq_hub75.bd
+read_verilog ./gen_ip/zynq_hub75/hdl/zynq_hub75_wrapper.v
 
-make_wrapper -files [ get_files  ./.srcs/sources_1/bd/zynq_hub75/zynq_hub75.bd ] -top
-read_verilog  .gen/sources_1/bd/zynq_hub75/hdl/zynq_hub75_wrapper.v 
-update_compile_order -fileset sources_1
 
+#make_wrapper -files [ get_files  ./gen_ip/zynq_hub75/zynq_hub75.bd ] -top -import
+#read_verilog -verbose ./gen_ip/zynq_hub75/hdl/zynq_hub75_wrapper.v
+#update_compile_order -fileset sources_1
+report_compile_order 
 
 synth_design -top zynq_hub75 -part $partNum
 write_checkpoint -force $outputDir/post_synth.dcp
@@ -39,7 +44,7 @@ report_timing_summary -file $outputDir/post_synth_timing_summary.report_timing_s
 report_utilization -file $outputDir/post_synth_util.rpt
 
 # Add ILA
-source add_ila.tcl
+#source add_ila.tcl
 
 #run optimization
 opt_design
