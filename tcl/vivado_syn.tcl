@@ -45,6 +45,7 @@ report_utilization -file $outputDir/post_synth_util.rpt
 
 # Add ILA
 #source add_ila.tcl
+#write_checkpoint -force $outputDir/post_synth_ila.dcp
 
 #run optimization
 opt_design
@@ -73,4 +74,5 @@ write_verilog -force $outputDir/hub75_zynq.v -mode timesim -sdf_anno true
 #write_bitstream -force $outputDir/bitstream.bit
 
 # Export HW platform for Vitis
+write_bitstream -force $outputDir/hub75_hw.bit
 write_hw_platform -fixed -include_bit -force -file $outputDir/hub75_hw.xsa

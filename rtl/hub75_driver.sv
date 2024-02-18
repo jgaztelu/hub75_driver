@@ -20,7 +20,7 @@ module hub75_driver #(
 
     /* HUB75 outputs */
     // Control signals
-    output logic O_CLK,
+    (* mark_debug = "true" *) output logic O_CLK,
     output logic STB,
     output logic OE,
 
@@ -40,8 +40,8 @@ module hub75_driver #(
     output logic B2
 );
 
-  logic [addr_width_p-1:0] framebuf_rd_addr;
-  logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
+  (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
+  (* mark_debug = "true" *) logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
 
 //   hub75_framebuf #(
 //       .hpixel_p(hpixel_p),
@@ -105,7 +105,7 @@ module hub75_driver #(
 
       //Config inputs
       .i_enable(i_enable),
-      .i_clk_div(i_clk_div),
+      .i_clk_div(4'd10),
       /* Pixel read interface */
       .o_rd_addr(framebuf_rd_addr),
       .i_rd_data(framebuf_rd_data),

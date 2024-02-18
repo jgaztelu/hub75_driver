@@ -1,7 +1,7 @@
 set ila_clock processing_system7_0_FCLK_CLK0
 
 create_debug_core ila1 ila
-set_property C_DATA_DEPTH   4096 [get_debug_cores ila1]
+set_property C_DATA_DEPTH   1024 [get_debug_cores ila1]
 set_property C_EN_STRG_QUAL true  [get_debug_cores ila1]
 set_property C_ADV_TRIGGER  true  [get_debug_cores ila1]
 set_property ALL_PROBE_SAME_MU_CNT 4  [get_debug_cores ila1]
