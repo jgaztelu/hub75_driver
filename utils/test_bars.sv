@@ -4116,12 +4116,12 @@ localparam [frame_size_p-1:0][3*bpp_p-1:0] test_bars_buf = {
 };
 
     always_ff @(posedge clk) begin
-        o_rd_data[0][2] <= bulbasaur_rom_buf[i_rd_addr][3*bpp_p-1-:8];
-        o_rd_data[0][1] <= bulbasaur_rom_buf[i_rd_addr][2*bpp_p-1-:8];
-        o_rd_data[0][0] <= bulbasaur_rom_buf[i_rd_addr][1*bpp_p-1-:8];
+        o_rd_data[0][2] <= test_bars_buf[i_rd_addr][3*bpp_p-1-:8];
+        o_rd_data[0][1] <= test_bars_buf[i_rd_addr][2*bpp_p-1-:8];
+        o_rd_data[0][0] <= test_bars_buf[i_rd_addr][1*bpp_p-1-:8];
 
-        o_rd_data[1][2] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][3*bpp_p-1-:8];
-        o_rd_data[1][1] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][2*bpp_p-1-:8];
-        o_rd_data[1][0] <= bulbasaur_rom_buf[i_rd_addr+frame_size_p/2][1*bpp_p-1-:8];
+        o_rd_data[1][2] <= test_bars_buf[i_rd_addr+frame_size_p/2][3*bpp_p-1-:8];
+        o_rd_data[1][1] <= test_bars_buf[i_rd_addr+frame_size_p/2][2*bpp_p-1-:8];
+        o_rd_data[1][0] <= test_bars_buf[i_rd_addr+frame_size_p/2][1*bpp_p-1-:8];
     end
 endmodule
