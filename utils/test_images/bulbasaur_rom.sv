@@ -15,6 +15,7 @@ module bulbasaur_rom #(
     input logic [addr_width_p-1:0] i_rd_addr,
     output logic [segments_p-1:0][2:0][bpp_p-1:0] o_rd_data
     );
+	
 
 	localparam [frame_size_p-1:0][3*bpp_p-1:0] bulbasaur_rom_buf = {
 		24'h7f007f,
