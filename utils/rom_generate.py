@@ -22,6 +22,13 @@ class rom_generator():
         # TODO: Save pil to array (getdata)
         self.data = list(image.getdata())
         return self
+    
+    def test_bars(self):
+        test_colors = [(255,255,255),(255,255,0),(0,255,255),(0,255,0),(255,0,255),(255,0,0),(0,0,255),(0,0,0)]
+        bar_len = int(self.width/8)
+        test_line = [pix for pix in test_colors for i in range(bar_len)]
+        self.data = test_line*self.height
+        return self
 
     def gen_sv(self):
         sv_header = f"module {self.name} #("
@@ -86,14 +93,15 @@ class rom_generator():
 
 
 img_path = 'test_images/bulbasaur_crop_64x64.png'
-rom_path = 'test_images/bulbasaur_rom.sv'
-rec_path = 'test_images/bulbasaur_recover_64x64.png'
+rom_path = 'test_images/test_bars.sv'
+rec_path = 'test_images/testbars_recover_64x64.png'
 width = 64
 height = 64
 
-rom = rom_generator('bulbasaur_rom', width, height, 2)
+rom = rom_generator('test_bars_rom', width, height, 2)
 
-rom.from_image(img_path).gen_sv().save_rom(rom_path).recover_image(rec_path)
+# rom.from_image(img_path).gen_sv().save_rom(rom_path).recover_image(rec_path)
+rom.test_bars().gen_sv().save_rom(rom_path).recover_image(rec_path)
 
 
 # img_data = from_image(img_path, width, height)
