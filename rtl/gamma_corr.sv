@@ -11,9 +11,9 @@ module gamma_corr #(
 
   logic [7:0] gamma_pixel;
 
-  always_ff @(posedge clk) begin
-    pixel_out <= gamma_corr_c[pixel_in];
-    // pixel_out <= gamma_pixel;
-  end
-
+  // always_ff @(posedge clk) begin
+  //   pixel_out <= gamma_corr_c[pixel_in];
+  //   // pixel_out <= gamma_pixel;
+  // end
+  assign pixel_out = gamma_corr_c[pixel_in];
 endmodule // gamma_corr

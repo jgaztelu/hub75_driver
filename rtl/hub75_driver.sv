@@ -42,6 +42,8 @@ module hub75_driver #(
 
   (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
   (* mark_debug = "true" *) logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
+  logic [segments_p-1:0][2:0][bpp_p-1:0] gamma_rd_data;
+
 
 //   hub75_framebuf #(
 //       .hpixel_p(hpixel_p),
@@ -92,6 +94,36 @@ module hub75_driver #(
       .i_rd_addr(framebuf_rd_addr),
       .o_rd_data(framebuf_rd_data)
   );
+
+  // Instantiate gamma correction for R,G,B
+  generate;
+    for (genvar i=0; i<segments_p; i++) begin
+      gamma_corr #(
+        .pixel_width_p(bpp_p)
+      ) gamma_corr_r (
+        .clk(clk),
+        .pixel_in(framebuf_rd_data[i][2]),
+        .pixel_out(gamma_rd_data[i][2])
+      );
+
+      gamma_corr #(
+        .pixel_width_p(bpp_p)
+      ) gamma_corr_g (
+        .clk(clk),
+        .pixel_in(framebuf_rd_data[i][1]),
+        .pixel_out(gamma_rd_data[i][1])
+      );
+
+      gamma_corr #(
+        .pixel_width_p(bpp_p)
+      ) gamma_corr_b (
+        .clk(clk),
+        .pixel_in(framebuf_rd_data[i][0]),
+        .pixel_out(gamma_rd_data[i][0])
+      );    
+    end
+  endgenerate
+  
 
   hub75_display #(
       .hpixel_p(hpixel_p),
