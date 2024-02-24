@@ -81,12 +81,26 @@ module hub75_driver #(
 //       .o_rd_data(framebuf_rd_data)
 //   );
 
-      bulbasaur_rom #(
+      // bulbasaur_rom #(
+      // .hpixel_p(hpixel_p),
+      // .vpixel_p(vpixel_p),
+      // .bpp_p   (bpp_p),
+      // .segments_p(segments_p)
+    // ) bulbasaur_rom_i (
+      // .clk(clk),
+      // .rst_n(rst_n),
+
+      // /* Pixel read interface */
+      // .i_rd_addr(framebuf_rd_addr),
+      // .o_rd_data(framebuf_rd_data)
+  // );
+  
+	test_bars_rom #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
       .bpp_p   (bpp_p),
       .segments_p(segments_p)
-    ) bulbasaur_rom_i (
+    ) test_bars_rom_i (
       .clk(clk),
       .rst_n(rst_n),
 
@@ -140,7 +154,7 @@ module hub75_driver #(
       .i_clk_div(4'd10),
       /* Pixel read interface */
       .o_rd_addr(framebuf_rd_addr),
-      .i_rd_data(framebuf_rd_data),
+      .i_rd_data(gamma_rd_data),
 
       /* HUB75 output interface */
       // Control signals
