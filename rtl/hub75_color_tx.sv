@@ -97,6 +97,7 @@ module hub75_color_tx #(
                             o_serial_clk <= 0; 
                             o_latch_en <= 1;
                             latch_cnt <= clk_div_int-1;
+                            tx_cnt <= '0;
                             tx_state <= LATCH;
                         end else begin
                             // Read new pixels
