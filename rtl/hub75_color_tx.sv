@@ -38,6 +38,8 @@ module hub75_color_tx #(
     logic tx_start_d, tx_start_pos;
     logic [addr_width_p-1:0]  init_addr_int;
     logic [3:0]               clk_div_int;
+    logic [pix_bit_width_p-1:0] pix_bit_int;
+    logic [addr_width_p-1:0] rd_addr;
 
 
     always_ff @(posedge clk) begin
@@ -46,7 +48,6 @@ module hub75_color_tx #(
             clk_cnt <= '0;
             latch_cnt <= '0;
             o_ready <= 0;
-            o_rd_addr <= '0;
             o_serial_clk <= 0;
             o_red <= '0;
             o_green <= '0;
@@ -55,16 +56,21 @@ module hub75_color_tx #(
             tx_state <= IDLE;
             tx_start_d <= 0;
             init_addr_int <= '0;
+            pix_bit_int <= '0;
+            rd_addr <= '0;
         end else begin
             tx_start_d <= i_tx_start;
             case (tx_state)
                 IDLE: begin
                     o_ready <= 1;
+                    o_serial_clk <= 0;
+                    rd_addr <= i_init_addr;
                     if (tx_start_pos) begin
-                        o_serial_clk <= 0;
                         o_ready <= 0;
+                        // Sample control inputs
                         init_addr_int <= i_init_addr;
                         clk_div_int <= i_clk_div;
+                        pix_bit_int <= i_pix_bit;
                         tx_state <= TX_LOW;
                     end
                 end
@@ -77,9 +83,9 @@ module hub75_color_tx #(
                     end else begin                    
                         o_serial_clk <= 0;
                         for (int i=0; i<segments_p; i++) begin
-                            o_red <= i_rd_data[i][2][i_pix_bit];
-                            o_green <= i_rd_data[i][1][i_pix_bit];
-                            o_blue <= i_rd_data[i][0][i_pix_bit];
+                            o_red <= i_rd_data[i][2][pix_bit_int];
+                            o_green <= i_rd_data[i][1][pix_bit_int];
+                            o_blue <= i_rd_data[i][0][pix_bit_int];
                         end
                     end
                 end
@@ -93,6 +99,8 @@ module hub75_color_tx #(
                             latch_cnt <= clk_div_int-1;
                             tx_state <= LATCH;
                         end else begin
+                            // Read new pixels
+                            rd_addr <= rd_addr + 1;
                             tx_cnt <= tx_cnt + 1;
                             o_serial_clk <= 0;
                             tx_state <= TX_LOW;
@@ -111,10 +119,10 @@ module hub75_color_tx #(
                         tx_state <= IDLE;
                     end
                 end
-
             endcase
         end
     end
 
     assign tx_start_pos = i_tx_start & !tx_start_d;
+    assign o_rd_addr = rd_addr;
 endmodule
