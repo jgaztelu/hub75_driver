@@ -65,7 +65,7 @@ module hub75_color_tx #(
                     o_ready <= 1;
                     o_serial_clk <= 0;
                     rd_addr <= i_init_addr;
-                    if (tx_start_pos) begin
+                    if (i_tx_start) begin
                         o_ready <= 0;
                         // Sample control inputs
                         init_addr_int <= i_init_addr;

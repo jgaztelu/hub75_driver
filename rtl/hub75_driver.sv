@@ -229,11 +229,27 @@ module hub75_driver #(
     .rst_n(rst_n),
     .i_clk_div(4'd4),
     .o_tx_start(tx_start),
+    .o_timer_en(timer_en),
     .o_init_addr(init_addr),
     .o_pix_bit(pix_bit),
     .i_tx_ready(tx_ready),
-    .o_out_en_n()
+    .i_blanking(out_en)
   );
+  logic out_en;
+  logic timer_en;
+
+  hub75_timer #(
+    .bpp_p(bpp_p)
+  ) hub75_timer_i (
+    .clk(clk),
+    .rst_n(rst_n),
+    .i_timer_en(timer_en),
+    .i_base_wait(16'd160),
+    .i_blank_interval(16'd16),
+    .i_pix_bit(pix_bit),
+    .o_out_en_n(out_en)
+  );
+  
 
 
 endmodule
