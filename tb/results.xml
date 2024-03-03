@@ -1,6 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1709493724" />
-    <testcase name="test_hub75_driver" classname="test_hub75_driver" file="/home/jgaztelu/fpga/proj/hub75_driver/tb/test_hub75_driver.py" lineno="13" time="34.57607293128967" sim_time_ns="2377890.001" ratio_time="68772.70318481208" />
-  </testsuite>
-</testsuites>
