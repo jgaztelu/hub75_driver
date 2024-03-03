@@ -83,9 +83,9 @@ module hub75_color_tx #(
                     end else begin                    
                         o_serial_clk <= 0;
                         for (int i=0; i<segments_p; i++) begin
-                            o_red <= i_rd_data[i][2][pix_bit_int];
-                            o_green <= i_rd_data[i][1][pix_bit_int];
-                            o_blue <= i_rd_data[i][0][pix_bit_int];
+                            o_red[i] <= i_rd_data[i][2][pix_bit_int];
+                            o_green[i] <= i_rd_data[i][1][pix_bit_int];
+                            o_blue[i] <= i_rd_data[i][0][pix_bit_int];
                         end
                     end
                 end

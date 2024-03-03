@@ -22,6 +22,8 @@ module hub75_control #(
 );
 
 localparam int min_wait = 4;
+localparam out_rows_p = vpixel_p/segments_p;
+
 
 typedef enum {IDLE,FIRST_TX,TX,WAIT} hub75_control_state_t;
 hub75_control_state_t control_state;
@@ -32,6 +34,8 @@ logic blanking_d, blanking_pos, blanking_neg;
 logic overflow, underflow;
 
 logic started;
+logic new_row;
+logic new_frame;
 
 // Under/over flow detection
 logic tx_ready_d, tx_ready_pos;
@@ -47,8 +51,12 @@ always_ff @(posedge clk) begin
         blanking_d <= 0;
         control_state <= IDLE;
         started <= 0;
+        new_frame <= 0;
+        new_row <= 0;
     end else begin
         o_tx_start <= 0;
+        new_frame <= 0;
+        new_row <= 0;
         blanking_d <= i_blanking;
         case (control_state)
             IDLE: begin
@@ -71,9 +79,11 @@ always_ff @(posedge clk) begin
                 if (i_tx_ready) begin
                     o_timer_en <= 1;
                     if (bit_cnt == bpp_p-1) begin
-                        if (row_cnt == vpixel_p-1) begin
+                        new_row <= 1;
+                        if (row_cnt == out_rows_p-1) begin
                             bit_cnt <= '0;
                             row_cnt <= '0;
+                            new_frame <= 1;
                             control_state <= IDLE;
                         end else begin
                             bit_cnt <= '0;
