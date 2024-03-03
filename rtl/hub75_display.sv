@@ -119,9 +119,9 @@ module hub75_display #(
             // end
 
             for (int i = 0; i < segments_p; i++) begin
-              r_out[i] <= i_rd_data[i][0][pixel_bit];
+              r_out[i] <= i_rd_data[i][2][pixel_bit];
               g_out[i] <= i_rd_data[i][1][pixel_bit];
-              b_out[i] <= i_rd_data[i][2][pixel_bit];
+              b_out[i] <= i_rd_data[i][0][pixel_bit];
             end
             hcount <= hcount + 1;
           end
@@ -137,9 +137,9 @@ module hub75_display #(
 
               // Shift data out for all segments
               for (int i = 0; i < segments_p; i++) begin
-                r_out[i] <= i_rd_data[i][0][pixel_bit];
+                r_out[i] <= i_rd_data[i][2][pixel_bit];
                 g_out[i] <= i_rd_data[i][1][pixel_bit];
-                b_out[i] <= i_rd_data[i][2][pixel_bit];
+                b_out[i] <= i_rd_data[i][0][pixel_bit];
               end
 
               // // Fetch next pixel

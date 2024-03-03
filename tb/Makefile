@@ -6,10 +6,17 @@ SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 export PYTHONPATH := $(PROJDIR)/tb/tests
 
-VERILOG_SOURCES += 	$(UTILSDIR)/bulbasaur_rom.sv \
+VERILOG_SOURCES += 	$(UTILSDIR)/test_images/bulbasaur_rom.sv \
+					$(UTILSDIR)/test_images/test_bars.sv \
+					$(RTLDIR)/gamma_corr_pkg.sv \
+					$(RTLDIR)/gamma_corr.sv \
+					$(RTLDIR)/test_corners.sv \
 					$(RTLDIR)/hub75_framebuf.sv \
 					$(RTLDIR)/hub75_test_bars.sv \
 					$(RTLDIR)/hub75_display.sv \
+					$(RTLDIR)/hub75_color_tx.sv \
+					$(RTLDIR)/hub75_timer.sv \
+					$(RTLDIR)/hub75_control.sv \
 					$(RTLDIR)/hub75_driver.sv
 				
 # use VHDL_SOURCES for VHDL files
