@@ -22,9 +22,8 @@ if {[llength $files] != 0} {
 create_project -in_memory -part $partNum
 set_property source_mgmt_mode All [current_project] 
 read_verilog -verbose -sv [ glob $rtlDir/*.sv]
-read_verilog -verbose -sv [ glob $utilsDir/*.sv]
+read_verilog -verbose -sv [ glob $utilsDir/test_images/*.sv]
 read_vhdl -verbose [ glob $rtlDir/*.vhd]
-read_xdc ../constraints/system.xdc
 
 source zynq_hub75_new.tcl
 generate_target all [ get_files ./gen_ip/zynq_hub75/zynq_hub75.bd ]
@@ -45,9 +44,13 @@ report_utilization -file $outputDir/post_synth_util.rpt
 
 # Add ILA
 #source add_ila.tcl
+#source new_batch_insert_ila.tcl
+#batch_insert_ila 1024
 #write_checkpoint -force $outputDir/post_synth_ila.dcp
 
 #run optimization
+read_xdc ../constraints/system.xdc
+
 opt_design
 place_design
 report_clock_utilization -file $outputDir/clock_util.rpt
@@ -76,3 +79,5 @@ write_verilog -force $outputDir/hub75_zynq.v -mode timesim -sdf_anno true
 # Export HW platform for Vitis
 write_bitstream -force $outputDir/hub75_hw.bit
 write_hw_platform -fixed -include_bit -force -file $outputDir/hub75_hw.xsa
+write_debug_probes -force $outputDir/debug_nets.ltx
+
