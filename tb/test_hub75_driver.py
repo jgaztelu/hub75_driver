@@ -8,6 +8,7 @@ HLINES = 64
 VLINES = 64
 BPP = 8
 FRAME_SIZE = HLINES*VLINES
+BASE_WAIT = 128
 
 @cocotb.test()
 async def test_hub75_driver(dut):
@@ -25,14 +26,20 @@ async def test_hub75_driver(dut):
     dut.rst_n.value = 1
     await Timer(2*CLK_PER, units='ns')
     dut.i_enable.value = 1
-    timer = Timer(2*FRAME_SIZE*BPP*CLK_PER, units='ns')
-    sreg = cocotb.start_soon(sreg_model(dut))
-    result = await First(sreg,timer)
-    if result == timer:
-        print("TIMEOUT!!")
-    else:
-        # print("Sreg line completed")
-        pass
+    # timer = Timer(2*FRAME_SIZE*BPP*CLK_PER, units='ns')
+    # timer = Timer(HLINES*(BASE_WAIT*2**BPP)+HLINES*16, units='ns')
+    # sreg = cocotb.start_soon(sreg_model(dut))
+    for i in range(8):
+        await RisingEdge(dut.hub75_control_i.new_row)
+        print(f'Row {i}')
+    # await RisingEdge(dut.hub75_control_i.new_frame)
+    # await timer
+    # result = await First(sreg,timer)
+    # if result == timer:
+    #     print("TIMEOUT!!")
+    # else:
+    #     await FallingEdge(dut.O_CLK)
+        
 
 
 
@@ -43,19 +50,20 @@ async def sreg_model(dut):
     sreg1 = size*[(0,0,0)] # [max..0]
     sreg2 = size*[(0,0,0)] # [max..0]
     while True:
-        await RisingEdge(dut.O_CLK)
-        pix = (dut.R1.value, dut.G1.value, dut.B1.value)
-        sreg1 = sreg1[1:] + [pix]
-        print(f'Col: {col_cnt} Row: {row_cnt} Val: {pix}')
-        if (col_cnt-1) < (size-1):
-            col_cnt += 1
+        await First(RisingEdge(dut.O_CLK), RisingEdge(dut.STB))
+        if dut.STB.value:
+            print(f"OE Received after {col_cnt} clock cycles")
+            break
         else:
-            print(f"Finished line {row_cnt}")
-            col_cnt = 0
-            row_cnt += 1
-            if (row_cnt-1) == (size-1):
-                print("Frame finished")
-                break
+            pix = (dut.R1.value, dut.G1.value, dut.B1.value)
+            sreg1 = sreg1[1:] + [pix]
+            col_cnt += 1
+            if col_cnt > (size-1):
+                print("Overflow detected")
+        
+
+
+
             
             
 
