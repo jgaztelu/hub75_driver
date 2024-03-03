@@ -91,6 +91,10 @@ module hub75_color_tx #(
                 end
 
                 TX_HIGH: begin
+                    if (clk_cnt == clk_div_int-2) begin
+                        // Read new pixels
+                        rd_addr <= rd_addr + 1;
+                    end
                     if (clk_cnt == clk_div_int-1) begin
                         clk_cnt <= 0;
                         if (tx_cnt == max_cnt) begin
@@ -100,8 +104,6 @@ module hub75_color_tx #(
                             tx_cnt <= '0;
                             tx_state <= LATCH;
                         end else begin
-                            // Read new pixels
-                            rd_addr <= rd_addr + 1;
                             tx_cnt <= tx_cnt + 1;
                             o_serial_clk <= 0;
                             tx_state <= TX_LOW;
