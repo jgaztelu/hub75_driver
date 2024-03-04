@@ -59,7 +59,7 @@ module hub75_timer #(
         if (!rst_n) begin
             cur_row <= '0;
         end else begin
-            if (wait_cnt == new_row_cnt) begin
+            if (new_row) begin
                 if (cur_row == out_rows_p-1) begin
                     cur_row <= '0;
                 end else begin
@@ -73,7 +73,7 @@ module hub75_timer #(
     assign wait_max = i_base_wait << pix_bit;
     assign cnt_max = wait_max + i_blank_interval;
     assign new_row_cnt = wait_max + i_blank_interval/2;
-    assign new_row = (pix_bit == bpp_p-1) && (wait_cnt == wait_max);
+    assign new_row = (pix_bit == bpp_p-1) && (wait_cnt == new_row_cnt);
     assign o_out_en_n = out_en;
     assign o_row_sel = cur_row;
 endmodule
