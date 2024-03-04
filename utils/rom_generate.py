@@ -1,12 +1,15 @@
 from PIL import Image
 import os
 import numpy as np
+import math
 
 class rom_generator():
     def __init__(self, name: str, width: int, height: int, segments: int):
         self.name = name
         self.width = width
         self.height = height
+        self.size = width*height
+        self.addr_wd = math.ceil(math.log2(self.size))
         self.segments = segments
         self.data = [(0,0,0) * (width*height) ]
         self.sv = ""
@@ -27,7 +30,8 @@ class rom_generator():
         test_colors = [(255,255,255),(255,255,0),(0,255,255),(0,255,0),(255,0,255),(255,0,0),(0,0,255),(0,0,0)]
         bar_len = int(self.width/8)
         test_line = [pix for pix in test_colors for i in range(bar_len)]
-        self.data = test_line*self.height
+        print(test_line)
+        self.data = (test_line*self.height)
         return self
 
     def gen_sv(self):
@@ -69,6 +73,65 @@ class rom_generator():
         # print (sv_header + parameters + ports + constant + hex_string + logic + endmodule)
         return self
     
+    def gen_sv2(self):
+        sv_header = f"module {self.name} #("
+        parameters = f"""
+    parameter hpixel_p = {self.width},
+    parameter vpixel_p = {self.height},
+    parameter bpp_p = 8,
+    parameter segments_p = {self.segments},
+    localparam frame_size_p = hpixel_p*vpixel_p,
+    localparam addr_width_p = $clog2(frame_size_p)
+    ) (\n"""
+        ports = """
+    // Clock and reset
+    input logic clk,
+    input logic rst_n,
+
+    /* Pixel read interface */
+    input logic [addr_width_p-1:0] i_rd_addr,
+    output logic [segments_p-1:0][2:0][bpp_p-1:0] o_rd_data
+    );\n\n"""
+        signal = """logic [3*bpp-1:0] rd_data_0;\n
+                    logic [3*bpp-1:0] rd_data_0;\n"""
+        # constant = f"\tlocalparam [frame_size_p-1:0][3*bpp_p-1:0] {self.name}_buf = {{\n"
+        
+        self.hex_values = ["24'h{:02x}{:02x}{:02x}".format(r, g, b) for r, g, b in self.data]
+        # self.hex_values.append("24'h{:02x}{:02x}{:02x}}}".format(*self.data[-1]))
+        cases_0 = []
+        cases_1 = []
+        for i in range(int(self.size/2)):
+            cases_0.append(f"\t\t{self.addr_wd}'d{i:04}: rd_data_0 <= {self.hex_values[i]};\n")
+            cases_1.append(f"\t\t{self.addr_wd}'d{i:04}: rd_data_1 <= {self.hex_values[i+(int(self.size/2))]};\n")
+        # print(cases_0)
+        case0_string = ''.join(cases_0)
+        case1_string = ''.join(cases_1)
+
+        print(cases_0)
+
+        logic = f"""
+    always_ff @(posedge clk) begin
+        case (i_rd_addr)
+{case0_string}
+        endcase
+
+        case (i_rd_addr)
+{case1_string}
+        endcase
+    end    
+        assign o_rd_data[0][2] <= rd_data_0[3*bpp_p-1-:8];
+        assign o_rd_data[0][1] <= rd_data_0[2*bpp_p-1-:8];
+        assign o_rd_data[0][0] <= rd_data_0[bpp_p-1-:8];
+
+        assign o_rd_data[1][2] <= rd_data_1[3*bpp_p-1-:8];
+        assign o_rd_data[1][1] <= rd_data_1[2*bpp_p-1-:8];
+        assign o_rd_data[1][0] <= rd_data_1[bpp_p-1-:8];
+"""
+        endmodule = 'endmodule'
+        self.sv = sv_header + parameters + ports + logic + endmodule
+        # print (sv_header + parameters + ports + constant + hex_string + logic + endmodule)
+        return self
+    
     def save_rom(self, path):
         cur_path = os.path.dirname(os.path.realpath(__file__))
         rom_path = cur_path + '/' + path
@@ -93,15 +156,16 @@ class rom_generator():
 
 
 img_path = 'test_images/bulbasaur_crop_64x64.png'
-rom_path = 'test_images/test_bars.sv'
+rom_path = 'test_images/testbars_rom_new.sv'
 rec_path = 'test_images/testbars_recover_64x64.png'
 width = 64
 height = 64
 
-rom = rom_generator('test_bars_rom', width, height, 2)
+rom = rom_generator('test_bars_rom_new', width, height, 2)
 
 # rom.from_image(img_path).gen_sv().save_rom(rom_path).recover_image(rec_path)
-rom.test_bars().gen_sv().save_rom(rom_path).recover_image(rec_path)
+rom.test_bars().gen_sv2().save_rom(rom_path)
+
 
 
 # img_data = from_image(img_path, width, height)
