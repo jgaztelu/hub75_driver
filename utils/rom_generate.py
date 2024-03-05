@@ -119,13 +119,13 @@ class rom_generator():
 {case1_string}
         endcase
     end    
-        assign o_rd_data[0][2] <= rd_data_0[3*bpp_p-1-:8];
-        assign o_rd_data[0][1] <= rd_data_0[2*bpp_p-1-:8];
-        assign o_rd_data[0][0] <= rd_data_0[bpp_p-1-:8];
+        assign o_rd_data[0][2] = rd_data_0[3*bpp_p-1-:8];
+        assign o_rd_data[0][1] = rd_data_0[2*bpp_p-1-:8];
+        assign o_rd_data[0][0] = rd_data_0[bpp_p-1-:8];
 
-        assign o_rd_data[1][2] <= rd_data_1[3*bpp_p-1-:8];
-        assign o_rd_data[1][1] <= rd_data_1[2*bpp_p-1-:8];
-        assign o_rd_data[1][0] <= rd_data_1[bpp_p-1-:8];
+        assign o_rd_data[1][2] = rd_data_1[3*bpp_p-1-:8];
+        assign o_rd_data[1][1] = rd_data_1[2*bpp_p-1-:8];
+        assign o_rd_data[1][0] = rd_data_1[bpp_p-1-:8];
 """
         endmodule = 'endmodule'
         self.sv = sv_header + parameters + ports + logic + endmodule
@@ -156,15 +156,15 @@ class rom_generator():
 
 
 img_path = 'test_images/bulbasaur_crop_64x64.png'
-rom_path = 'test_images/testbars_rom_new.sv'
+rom_path = 'test_images/bulbasaur_rom_new.sv'
 rec_path = 'test_images/testbars_recover_64x64.png'
 width = 64
 height = 64
 
-rom = rom_generator('test_bars_rom_new', width, height, 2)
+rom = rom_generator('bulbasaur_rom_new', width, height, 2)
 
-# rom.from_image(img_path).gen_sv().save_rom(rom_path).recover_image(rec_path)
-rom.test_bars().gen_sv2().save_rom(rom_path)
+rom.from_image(img_path).gen_sv2().save_rom(rom_path)
+# rom.test_bars().gen_sv2().save_rom(rom_path)
 
 
 
