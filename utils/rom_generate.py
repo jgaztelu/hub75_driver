@@ -92,8 +92,9 @@ class rom_generator():
     input logic [addr_width_p-1:0] i_rd_addr,
     output logic [segments_p-1:0][2:0][bpp_p-1:0] o_rd_data
     );\n\n"""
-        signal = """logic [3*bpp-1:0] rd_data_0;\n
-                    logic [3*bpp-1:0] rd_data_0;\n"""
+        signal = """
+        logic [3*bpp-1:0] rd_data_0;
+        logic [3*bpp-1:0] rd_data_1;\n"""
         # constant = f"\tlocalparam [frame_size_p-1:0][3*bpp_p-1:0] {self.name}_buf = {{\n"
         
         self.hex_values = ["24'h{:02x}{:02x}{:02x}".format(r, g, b) for r, g, b in self.data]
@@ -128,7 +129,7 @@ class rom_generator():
         assign o_rd_data[1][0] = rd_data_1[bpp_p-1-:8];
 """
         endmodule = 'endmodule'
-        self.sv = sv_header + parameters + ports + logic + endmodule
+        self.sv = sv_header + parameters + ports + signal + logic + endmodule
         # print (sv_header + parameters + ports + constant + hex_string + logic + endmodule)
         return self
     
