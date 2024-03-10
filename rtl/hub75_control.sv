@@ -3,6 +3,7 @@ module hub75_control #(
     parameter  vpixel_p     = 64,                   // Display height in pixels
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
     parameter  segments_p = 2,   // Number of display segments
+    parameter clk_div_wd_p = 8, // Maximum width for clock divider
     localparam frame_size_p = hpixel_p * vpixel_p,
     localparam addr_width_p = $clog2(frame_size_p),
     localparam pix_bit_width_p = $clog2(bpp_p)
@@ -10,7 +11,7 @@ module hub75_control #(
     input logic clk,
     input logic rst_n,
     // Config. inputs
-    input logic [3:0]               i_clk_div,
+    input logic [clk_div_wd_p-1:0]      i_clk_div,
     // Control interface
     output logic                        o_tx_start,
     output logic                        o_timer_en,

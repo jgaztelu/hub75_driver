@@ -3,6 +3,8 @@ module hub75_color_tx #(
     parameter  vpixel_p     = 64,                   // Display height in pixels
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
     parameter  segments_p = 2,   // Number of display segments
+    parameter clk_div_wd_p = 8, // Maximum width for clock divider
+
     localparam frame_size_p = hpixel_p * vpixel_p,
     localparam addr_width_p = $clog2(frame_size_p),
     localparam pix_bit_width_p = $clog2(bpp_p)
@@ -10,7 +12,7 @@ module hub75_color_tx #(
     input logic clk,
     input logic rst_n,
     // Config. inputs
-    input logic [3:0]               i_clk_div,
+    input logic [clk_div_wd_p-1:0]  i_clk_div,
     // Control interface
     input logic                     i_tx_start,
     input logic [addr_width_p-1:0]  i_init_addr,
@@ -33,7 +35,7 @@ module hub75_color_tx #(
     tx_state_t tx_state;
 
     logic [$clog2(hpixel_p)-1:0]    tx_cnt;
-    logic [3:0]                     clk_cnt;
+    logic [clk_div_wd_p-1:0]        clk_cnt;
     logic [3:0]                     latch_cnt;
     logic tx_start_d, tx_start_pos;
     logic [addr_width_p-1:0]  init_addr_int;
@@ -62,6 +64,9 @@ module hub75_color_tx #(
             tx_start_d <= i_tx_start;
             case (tx_state)
                 IDLE: begin
+                    o_red <= '0;
+                    o_green <= '0;
+                    o_blue <= '0;
                     o_ready <= 1;
                     o_serial_clk <= 0;
                     rd_addr <= i_init_addr;

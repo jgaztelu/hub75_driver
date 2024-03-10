@@ -3,6 +3,7 @@ module hub75_driver #(
     parameter  vpixel_p     = 64,                   // Display height in pixels
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
     parameter segments_p = 2,   // Number of display segments
+    parameter clk_div_wd_p = 8, // Maximum width for clock divider
     localparam frame_size_p = hpixel_p * vpixel_p,
     localparam addr_width_p = $clog2(frame_size_p)
 ) (
@@ -63,37 +64,37 @@ module hub75_driver #(
 //       .o_rd_data(framebuf_rd_data)
 //   );
 
-    hub75_test_bars #(
+  //   hub75_test_bars #(
+  //     .hpixel_p(hpixel_p),
+  //     .vpixel_p(vpixel_p),
+  //     .bpp_p   (bpp_p),
+  //     .segments_p(segments_p)
+  //   ) hub75_test_bars_i (
+  //     .clk(clk),
+  //     .rst_n(rst_n),
+  //     /* Write interface */
+  //     .i_wr_addr(i_framebuf_wr_addr),
+  //     .i_wr_data(i_framebuf_wr_data),
+  //     .i_wr_en(i_framebuf_wr_en),
+
+  //     /* Pixel read interface */
+  //     .i_rd_addr(framebuf_rd_addr),
+  //     .o_rd_data(framebuf_rd_data)
+  // );
+
+      bulbasaur_rom #(
       .hpixel_p(hpixel_p),
       .vpixel_p(vpixel_p),
       .bpp_p   (bpp_p),
       .segments_p(segments_p)
-    ) hub75_test_bars_i (
+    ) bulbasaur_rom_i (
       .clk(clk),
       .rst_n(rst_n),
-      /* Write interface */
-      .i_wr_addr(i_framebuf_wr_addr),
-      .i_wr_data(i_framebuf_wr_data),
-      .i_wr_en(i_framebuf_wr_en),
 
       /* Pixel read interface */
       .i_rd_addr(framebuf_rd_addr),
       .o_rd_data(framebuf_rd_data)
   );
-
-      // bulbasaur_rom #(
-      // .hpixel_p(hpixel_p),
-      // .vpixel_p(vpixel_p),
-      // .bpp_p   (bpp_p),
-      // .segments_p(segments_p)
-    // ) bulbasaur_rom_i (
-      // .clk(clk),
-      // .rst_n(rst_n),
-
-      // /* Pixel read interface */
-      // .i_rd_addr(framebuf_rd_addr),
-      // .o_rd_data(framebuf_rd_data)
-  // );
 
   //   test_corners #(
   //     .hpixel_p(hpixel_p),
@@ -200,7 +201,7 @@ module hub75_driver #(
   ) hub75_color_tx_i (
     .clk(clk),
     .rst_n(rst_n),
-    .i_clk_div(4'd4),
+    .i_clk_div(8'd250),
     .i_tx_start(tx_start),
     .i_init_addr(init_addr),
     .i_pix_bit(pix_bit),
@@ -229,7 +230,7 @@ module hub75_driver #(
   ) hub75_control_i (
     .clk(clk),
     .rst_n(rst_n),
-    .i_clk_div(4'd4),
+    .i_clk_div(8'd250),
     .o_tx_start(tx_start),
     .o_timer_en(timer_en),
     .o_init_addr(init_addr),
