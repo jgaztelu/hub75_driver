@@ -26,7 +26,7 @@ localparam int min_wait = 4;
 localparam out_rows_p = vpixel_p/segments_p;
 
 
-typedef enum {IDLE,FIRST_TX,TX,WAIT} hub75_control_state_t;
+typedef enum {IDLE,FIRST_TX,WAIT_FIRST,SECOND_TX,TX,WAIT} hub75_control_state_t;
 hub75_control_state_t control_state;
 
 logic [$clog2(vpixel_p)-1:0] row_cnt;
@@ -70,6 +70,19 @@ always_ff @(posedge clk) begin
             end
 
             FIRST_TX: begin // Wait until first TX is in progress
+                if (!i_tx_ready) begin
+                    bit_cnt <= bit_cnt + 1;
+                    control_state <= WAIT_FIRST;
+                end
+            end
+
+            WAIT_FIRST: begin
+                if (i_tx_ready) begin // Preload first row
+                    o_tx_start <= 1;
+                    control_state <= SECOND_TX;
+                end
+            end
+            SECOND_TX: begin
                 if (!i_tx_ready) begin
                     bit_cnt <= bit_cnt + 1;
                     control_state <= TX;
