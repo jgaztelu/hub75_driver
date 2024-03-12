@@ -7,7 +7,7 @@ module hub75_timer #(
     input logic rst_n,
     // Config. inputs
     input logic                     i_timer_en,
-    input logic [2*bpp_p-1:0]       i_base_wait,
+    input logic [32-1:0]       i_base_wait,
     input logic [2*bpp_p-1:0]       i_blank_interval,
     input logic [$clog2(bpp_p)-1:0] i_pix_bit,
     // Outputs

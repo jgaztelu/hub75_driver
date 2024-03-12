@@ -41,9 +41,20 @@ module hub75_driver #(
     output logic B2
 );
 
+	localparam int clk_divider = 8;
+	localparam int blanking = clk_divider*2;
+	localparam int base_wait = clk_divider*16;
   (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
   (* mark_debug = "true" *) logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
   logic [segments_p-1:0][2:0][bpp_p-1:0] gamma_rd_data;
+
+	logic tx_start;
+	logic tx_ready;
+	logic [$clog2(bpp_p)-1:0] pix_bit;
+	logic [addr_width_p-1:0] init_addr;
+	logic out_en;
+	logic timer_en;
+  
 
 
 //   hub75_framebuf #(
@@ -82,19 +93,19 @@ module hub75_driver #(
   //     .o_rd_data(framebuf_rd_data)
   // );
 
-      bulbasaur_rom #(
-      .hpixel_p(hpixel_p),
-      .vpixel_p(vpixel_p),
-      .bpp_p   (bpp_p),
-      .segments_p(segments_p)
-    ) bulbasaur_rom_i (
-      .clk(clk),
-      .rst_n(rst_n),
+      // bulbasaur_rom #(
+      // .hpixel_p(hpixel_p),
+      // .vpixel_p(vpixel_p),
+      // .bpp_p   (bpp_p),
+      // .segments_p(segments_p)
+    // ) bulbasaur_rom_i (
+      // .clk(clk),
+      // .rst_n(rst_n),
 
-      /* Pixel read interface */
-      .i_rd_addr(framebuf_rd_addr),
-      .o_rd_data(framebuf_rd_data)
-  );
+      // /* Pixel read interface */
+      // .i_rd_addr(framebuf_rd_addr),
+      // .o_rd_data(framebuf_rd_data)
+  // );
 
   //   test_corners #(
   //     .hpixel_p(hpixel_p),
@@ -110,19 +121,19 @@ module hub75_driver #(
   //     .o_rd_data(framebuf_rd_data)
   // );
   
-	// test_bars_rom #(
-  //     .hpixel_p(hpixel_p),
-  //     .vpixel_p(vpixel_p),
-  //     .bpp_p   (bpp_p),
-  //     .segments_p(segments_p)
-  //   ) test_bars_rom_i (
-  //     .clk(clk),
-  //     .rst_n(rst_n),
+	test_bars_rom #(
+      .hpixel_p(hpixel_p),
+      .vpixel_p(vpixel_p),
+      .bpp_p   (bpp_p),
+      .segments_p(segments_p)
+    ) test_bars_rom_i (
+      .clk(clk),
+      .rst_n(rst_n),
 
-  //     /* Pixel read interface */
-  //     .i_rd_addr(framebuf_rd_addr),
-  //     .o_rd_data(framebuf_rd_data)
-  // );
+      /* Pixel read interface */
+      .i_rd_addr(framebuf_rd_addr),
+      .o_rd_data(framebuf_rd_data)
+  );
 
   // Instantiate gamma correction for R,G,B
   generate;
@@ -201,7 +212,7 @@ module hub75_driver #(
   ) hub75_color_tx_i (
     .clk(clk),
     .rst_n(rst_n),
-    .i_clk_div(8'd250),
+    .i_clk_div(clk_divider),
     .i_tx_start(tx_start),
     .i_init_addr(init_addr),
     .i_pix_bit(pix_bit),
@@ -215,13 +226,6 @@ module hub75_driver #(
     .o_latch_en(STB)
   );
 
-  logic tx_start;
-  logic tx_ready;
-  logic [$clog2(bpp_p)-1:0] pix_bit;
-  logic [addr_width_p-1:0] init_addr;
-  logic out_en;
-  logic timer_en;
-
   hub75_control #(
     .hpixel_p(hpixel_p),
     .vpixel_p(vpixel_p),
@@ -230,7 +234,7 @@ module hub75_driver #(
   ) hub75_control_i (
     .clk(clk),
     .rst_n(rst_n),
-    .i_clk_div(8'd250),
+    .i_clk_div(clk_divider),
     .o_tx_start(tx_start),
     .o_timer_en(timer_en),
     .o_init_addr(init_addr),
@@ -246,8 +250,8 @@ module hub75_driver #(
     .clk(clk),
     .rst_n(rst_n),
     .i_timer_en(timer_en),
-    .i_base_wait(16'd128),
-    .i_blank_interval(16'd16),
+    .i_base_wait(base_wait),
+    .i_blank_interval(blanking),
     .i_pix_bit(pix_bit),
     .o_out_en_n(out_en),
     .o_row_sel({A,B,C,D,E})
