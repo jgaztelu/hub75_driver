@@ -41,7 +41,7 @@ module hub75_driver #(
     output logic B2
 );
 
-	localparam int clk_divider = 8;
+	localparam int clk_divider = 32;
 	localparam int blanking = clk_divider*2;
 	localparam int base_wait = clk_divider*64;
   (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
@@ -208,7 +208,8 @@ module hub75_driver #(
     .hpixel_p(hpixel_p),
     .vpixel_p(vpixel_p),
     .bpp_p   (bpp_p),
-    .segments_p(segments_p)
+    .segments_p(segments_p),
+    .clk_div_wd_p(clk_div_wd_p)
   ) hub75_color_tx_i (
     .clk(clk),
     .rst_n(rst_n),
@@ -230,7 +231,8 @@ module hub75_driver #(
     .hpixel_p(hpixel_p),
     .vpixel_p(vpixel_p),
     .bpp_p   (bpp_p),
-    .segments_p(segments_p)
+    .segments_p(segments_p),
+    .clk_div_wd_p(clk_div_wd_p)
   ) hub75_control_i (
     .clk(clk),
     .rst_n(rst_n),

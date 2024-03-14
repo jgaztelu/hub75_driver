@@ -36,12 +36,12 @@ module hub75_color_tx #(
 
     logic [$clog2(hpixel_p)-1:0]    tx_cnt;
     logic [clk_div_wd_p-1:0]        clk_cnt;
-    logic [3:0]                     latch_cnt;
+    logic [clk_div_wd_p-1:0]        latch_cnt;
     logic tx_start_d, tx_start_pos;
-    logic [addr_width_p-1:0]  init_addr_int;
-    logic [3:0]               clk_div_int;
-    logic [pix_bit_width_p-1:0] pix_bit_int;
-    logic [addr_width_p-1:0] rd_addr;
+    logic [addr_width_p-1:0]        init_addr_int;
+    logic [clk_div_wd_p-1:0]        clk_div_int;
+    logic [pix_bit_width_p-1:0]     pix_bit_int;
+    logic [addr_width_p-1:0]        rd_addr;
 
 
     always_ff @(posedge clk) begin
