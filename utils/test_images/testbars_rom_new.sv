@@ -4122,11 +4122,11 @@ module test_bars_rom_new #(
 
         endcase
     end    
-        assign o_rd_data[0][2] <= rd_data_0[3*bpp_p-1-:8];
-        assign o_rd_data[0][1] <= rd_data_0[2*bpp_p-1-:8];
-        assign o_rd_data[0][0] <= rd_data_0[bpp_p-1-:8];
+        assign o_rd_data[0][2] = rd_data_0[3*bpp_p-1-:8];
+        assign o_rd_data[0][1] = rd_data_0[2*bpp_p-1-:8];
+        assign o_rd_data[0][0] = rd_data_0[bpp_p-1-:8];
 
-        assign o_rd_data[1][2] <= rd_data_1[3*bpp_p-1-:8];
-        assign o_rd_data[1][1] <= rd_data_1[2*bpp_p-1-:8];
-        assign o_rd_data[1][0] <= rd_data_1[bpp_p-1-:8];
+        assign o_rd_data[1][2] = rd_data_1[3*bpp_p-1-:8];
+        assign o_rd_data[1][1] = rd_data_1[2*bpp_p-1-:8];
+        assign o_rd_data[1][0] = rd_data_1[bpp_p-1-:8];
 endmodule
