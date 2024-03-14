@@ -17,8 +17,8 @@ module bulbasaur_rom_new #(
     );
 
 
-        logic [3*bpp-1:0] rd_data_0;
-        logic [3*bpp-1:0] rd_data_1;
+        logic [3*bpp_p-1:0] rd_data_0;
+        logic [3*bpp_p-1:0] rd_data_1;
 
     always_ff @(posedge clk) begin
         case (i_rd_addr)
