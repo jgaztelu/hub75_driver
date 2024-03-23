@@ -7,7 +7,7 @@ TOPLEVEL_LANG ?= verilog
 export PYTHONPATH := $(PROJDIR)/tb/tests
 
 VERILOG_SOURCES += 	$(UTILSDIR)/test_images/bulbasaur_rom.sv \
-					$(UTILSDIR)/test_images/test_bars.sv \
+					$(UTILSDIR)/test_images/test_bars_rom.sv \
 					$(RTLDIR)/gamma_corr_pkg.sv \
 					$(RTLDIR)/gamma_corr.sv \
 					$(RTLDIR)/test_corners.sv \
@@ -15,6 +15,7 @@ VERILOG_SOURCES += 	$(UTILSDIR)/test_images/bulbasaur_rom.sv \
 					$(RTLDIR)/hub75_test_bars.sv \
 					$(RTLDIR)/hub75_display.sv \
 					$(RTLDIR)/hub75_color_tx.sv \
+					$(RTLDIR)/hub75_color_test.sv \
 					$(RTLDIR)/hub75_timer.sv \
 					$(RTLDIR)/hub75_control.sv \
 					$(RTLDIR)/hub75_driver.sv

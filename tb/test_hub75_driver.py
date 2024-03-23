@@ -29,7 +29,8 @@ async def test_hub75_driver(dut):
     # timer = Timer(2*FRAME_SIZE*BPP*CLK_PER, units='ns')
     # timer = Timer(HLINES*(BASE_WAIT*2**BPP)+HLINES*16, units='ns')
     # sreg = cocotb.start_soon(sreg_model(dut))
-    for i in range(8):
+    # await(Timer(CLK_PER*3000000))
+    for i in range(4):
         await RisingEdge(dut.hub75_control_i.new_row)
         print(f'Row {i}')
     # await RisingEdge(dut.hub75_control_i.new_frame)

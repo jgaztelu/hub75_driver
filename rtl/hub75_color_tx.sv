@@ -107,6 +107,7 @@ module hub75_color_tx #(
                             o_latch_en <= 1;
                             latch_cnt <= clk_div_int-1;
                             tx_cnt <= '0;
+                            rd_addr <= i_init_addr;
                             tx_state <= LATCH;
                         end else begin
                             tx_cnt <= tx_cnt + 1;

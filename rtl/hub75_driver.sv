@@ -4,7 +4,7 @@ module hub75_driver #(
     parameter  bpp_p        = 8,                    // Bits per pixel color channel
     parameter segments_p = 2,   // Number of display segments
     parameter clk_div_wd_p = 8, // Maximum width for clock divider
-    localparam frame_size_p = hpixel_p * vpixel_p,
+    localparam frame_size_p = hpixel_p * vpixel_p,  // Total number of pixels in frame
     localparam addr_width_p = $clog2(frame_size_p)
 ) (
     // Clock and reset
@@ -41,9 +41,10 @@ module hub75_driver #(
     output logic B2
 );
 
-	localparam int clk_divider = 32;
+	localparam int clk_divider = 4;
 	localparam int blanking = clk_divider*2;
 	localparam int base_wait = clk_divider*64;
+  localparam int base_wait_wd_p = $clog2(base_wait) + 1;
   (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
   (* mark_debug = "true" *) logic [segments_p-1:0][2:0][bpp_p-1:0] framebuf_rd_data;
   logic [segments_p-1:0][2:0][bpp_p-1:0] gamma_rd_data;
@@ -134,6 +135,21 @@ module hub75_driver #(
       .i_rd_addr(framebuf_rd_addr),
       .o_rd_data(framebuf_rd_data)
   );
+
+  // 	hub75_color_test #(
+  //     .hpixel_p(hpixel_p),
+  //     .vpixel_p(vpixel_p),
+  //     .bpp_p   (bpp_p),
+  //     .segments_p(segments_p)
+  //   ) hub75_color_test_i (
+  //     .clk(clk),
+  //     .rst_n(rst_n),
+
+  //     /* Pixel read interface */
+  //     .i_rd_addr(framebuf_rd_addr),
+  //     .o_rd_data(framebuf_rd_data)
+  // );
+
 
   // Instantiate gamma correction for R,G,B
   generate;
@@ -247,7 +263,10 @@ module hub75_driver #(
 
 
   hub75_timer #(
-    .bpp_p(bpp_p)
+    .vpixel_p(vpixel_p),
+    .bpp_p(bpp_p),
+    .segments_p(segments_p),
+    .base_wait_wd_p(base_wait_wd_p)
   ) hub75_timer_i (
     .clk(clk),
     .rst_n(rst_n),

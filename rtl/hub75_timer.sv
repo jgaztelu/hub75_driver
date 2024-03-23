@@ -1,15 +1,17 @@
 module hub75_timer #(
     parameter int vpixel_p = 64,
     parameter int bpp_p = 8,
-    parameter int segments_p = 2
+    parameter int segments_p = 2,
+    parameter int base_wait_wd_p = 12,
+    localparam int cnt_wd_p = base_wait_wd_p + bpp_p
 ) (
     input logic clk,
     input logic rst_n,
     // Config. inputs
-    input logic                     i_timer_en,
-    input logic [32-1:0]       i_base_wait,
-    input logic [2*bpp_p-1:0]       i_blank_interval,
-    input logic [$clog2(bpp_p)-1:0] i_pix_bit,
+    input logic                                 i_timer_en,
+    input logic [base_wait_wd_p-1:0]            i_base_wait,
+    input logic [2*bpp_p-1:0]                   i_blank_interval,
+    input logic [$clog2(bpp_p)-1:0]             i_pix_bit,
     // Outputs
     output logic [$clog2(vpixel_p)-1:0] o_row_sel,
     output logic o_out_en_n
@@ -17,9 +19,9 @@ module hub75_timer #(
     localparam out_rows_p = vpixel_p/segments_p;
 
     logic                       out_en;
-    logic [2*bpp_p-1:0]         wait_cnt;
-    logic [2*bpp_p-1:0]         wait_max;
-    logic [2*bpp_p-1:0]         cnt_max;
+    logic [cnt_wd_p-1:0]         wait_cnt;
+    logic [cnt_wd_p-1:0]         wait_max;
+    logic [cnt_wd_p-1:0]         cnt_max;
     logic                       new_row;
     logic [2*bpp_p-1:0]         new_row_cnt; // Counter value where row select should be updated (in the middle of blanking interval)
     logic [$clog2(bpp_p)-1:0]   pix_bit;

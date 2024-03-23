@@ -30,7 +30,7 @@ typedef enum {IDLE,FIRST_TX,WAIT_FIRST,SECOND_TX,TX,WAIT} hub75_control_state_t;
 hub75_control_state_t control_state;
 
 logic [$clog2(vpixel_p)-1:0] row_cnt;
-logic [pix_bit_width_p-1:0]  bit_cnt;
+logic [pix_bit_width_p:0]  bit_cnt;
 logic blanking_d, blanking_pos, blanking_neg;
 logic overflow, underflow;
 
@@ -45,7 +45,6 @@ logic [1:0] lines_in_buffer;
 always_ff @(posedge clk) begin
     if (!rst_n) begin
         o_tx_start <= 0;
-        o_init_addr <= '0;
         o_timer_en <= 0;
         row_cnt <= '0;
         bit_cnt <= '0;
@@ -79,7 +78,7 @@ always_ff @(posedge clk) begin
             WAIT_FIRST: begin
                 if (i_tx_ready) begin // Preload first row
                     o_tx_start <= 1;
-                    control_state <= SECOND_TX;
+                    control_state <= TX;
                 end
             end
             SECOND_TX: begin
@@ -92,7 +91,7 @@ always_ff @(posedge clk) begin
             TX: begin 
                 if (i_tx_ready) begin
                     o_timer_en <= 1;
-                    if (bit_cnt == bpp_p-1) begin
+                    if (bit_cnt == bpp_p) begin
                         new_row <= 1;
                         if (row_cnt == out_rows_p-1) begin
                             bit_cnt <= '0;
@@ -144,6 +143,8 @@ end
     assign tx_ready_pos = ~tx_ready_d & i_tx_ready;
     assign underflow = (lines_in_buffer == 0) && blanking_neg;
     assign overflow = lines_in_buffer > 2;
+    assign o_init_addr = row_cnt * hpixel_p;
+
 
 
 endmodule
