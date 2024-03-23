@@ -77,7 +77,7 @@ always_ff @(posedge clk) begin
 
             WAIT_FIRST: begin
                 if (i_tx_ready) begin // Preload first row
-                    o_tx_start <= 1;
+                    // o_tx_start <= 1;
                     control_state <= TX;
                 end
             end
@@ -91,7 +91,14 @@ always_ff @(posedge clk) begin
             TX: begin 
                 if (i_tx_ready) begin
                     o_timer_en <= 1;
-                    if (bit_cnt == bpp_p) begin
+                    o_tx_start <= 1;
+                    control_state <= WAIT;
+                end
+            end            
+
+            WAIT: begin
+                if (blanking_pos) begin
+                    if (bit_cnt == bpp_p-1) begin
                         new_row <= 1;
                         if (row_cnt == out_rows_p-1) begin
                             bit_cnt <= '0;
@@ -101,18 +108,15 @@ always_ff @(posedge clk) begin
                         end else begin
                             bit_cnt <= '0;
                             row_cnt <= row_cnt + 1;
+                            control_state <= TX;
                         end
                     end else begin
                         bit_cnt <= bit_cnt + 1;
+                        control_state <= TX;
                     end
-                    o_tx_start <= 1;
-                    control_state <= WAIT;
-                end
-            end            
 
-            WAIT: begin
-                if (blanking_pos) begin
-                    control_state <= TX;
+
+
                 end
             end
         endcase
