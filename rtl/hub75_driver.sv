@@ -94,19 +94,19 @@ module hub75_driver #(
   //     .o_rd_data(framebuf_rd_data)
   // );
 
-      // bulbasaur_rom #(
-      // .hpixel_p(hpixel_p),
-      // .vpixel_p(vpixel_p),
-      // .bpp_p   (bpp_p),
-      // .segments_p(segments_p)
-    // ) bulbasaur_rom_i (
-      // .clk(clk),
-      // .rst_n(rst_n),
+      bulbasaur_rom_new #(
+      .hpixel_p(hpixel_p),
+      .vpixel_p(vpixel_p),
+      .bpp_p   (bpp_p),
+      .segments_p(segments_p)
+    ) bulbasaur_rom_i (
+      .clk(clk),
+      .rst_n(rst_n),
 
-      // /* Pixel read interface */
-      // .i_rd_addr(framebuf_rd_addr),
-      // .o_rd_data(framebuf_rd_data)
-  // );
+      /* Pixel read interface */
+      .i_rd_addr(framebuf_rd_addr),
+      .o_rd_data(framebuf_rd_data)
+  );
 
   //   test_corners #(
   //     .hpixel_p(hpixel_p),
@@ -122,19 +122,19 @@ module hub75_driver #(
   //     .o_rd_data(framebuf_rd_data)
   // );
   
-	test_bars_rom #(
-      .hpixel_p(hpixel_p),
-      .vpixel_p(vpixel_p),
-      .bpp_p   (bpp_p),
-      .segments_p(segments_p)
-    ) test_bars_rom_i (
-      .clk(clk),
-      .rst_n(rst_n),
+	// test_bars_rom #(
+  //     .hpixel_p(hpixel_p),
+  //     .vpixel_p(vpixel_p),
+  //     .bpp_p   (bpp_p),
+  //     .segments_p(segments_p)
+  //   ) test_bars_rom_i (
+  //     .clk(clk),
+  //     .rst_n(rst_n),
 
-      /* Pixel read interface */
-      .i_rd_addr(framebuf_rd_addr),
-      .o_rd_data(framebuf_rd_data)
-  );
+  //     /* Pixel read interface */
+  //     .i_rd_addr(framebuf_rd_addr),
+  //     .o_rd_data(framebuf_rd_data)
+  // );
 
   // 	hub75_color_test #(
   //     .hpixel_p(hpixel_p),

@@ -2070,7 +2070,7 @@ module bulbasaur_rom_new #(
 		12'd2045: rd_data_0 <= 24'h810180;
 		12'd2046: rd_data_0 <= 24'h810180;
 		12'd2047: rd_data_0 <= 24'h7f007f;
-
+		default: rd_data_0 <= 24'hDEAD00;
         endcase
 
         case (i_rd_addr)
@@ -4122,6 +4122,7 @@ module bulbasaur_rom_new #(
 		12'd2045: rd_data_1 <= 24'h7f007f;
 		12'd2046: rd_data_1 <= 24'h7f007f;
 		12'd2047: rd_data_1 <= 24'h7f007f;
+		default: rd_data_0 <= 24'h00DEAD;
 
         endcase
     end    

@@ -96,7 +96,7 @@ module hub75_color_tx #(
                 end
 
                 TX_HIGH: begin
-                    if (clk_cnt == clk_div_int-2) begin
+                    if (clk_cnt == clk_div_int-2 && tx_cnt < max_cnt) begin
                         // Read new pixels
                         rd_addr <= rd_addr + 1;
                     end
