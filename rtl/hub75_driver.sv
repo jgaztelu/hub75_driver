@@ -42,7 +42,7 @@ module hub75_driver #(
 );
 
 	localparam int clk_divider = 4;
-	localparam int blanking = clk_divider*2;
+	localparam int blanking = clk_divider*4;
 	localparam int base_wait = clk_divider*64;
   localparam int base_wait_wd_p = $clog2(base_wait) + 1;
   (* mark_debug = "true" *) logic [addr_width_p-1:0] framebuf_rd_addr;
