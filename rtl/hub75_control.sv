@@ -26,7 +26,7 @@ localparam int min_wait = 4;
 localparam out_rows_p = vpixel_p/segments_p;
 
 
-typedef enum {IDLE,FIRST_TX,WAIT_FIRST,SECOND_TX,TX,WAIT} hub75_control_state_t;
+typedef enum {IDLE,FIRST_TX,WAIT_FIRST,SECOND_TX,TX,WAIT,WAIT_LAST} hub75_control_state_t;
 hub75_control_state_t control_state;
 
 logic [$clog2(vpixel_p)-1:0] row_cnt;
@@ -104,7 +104,7 @@ always_ff @(posedge clk) begin
                             bit_cnt <= '0;
                             row_cnt <= '0;
                             new_frame <= 1;
-                            control_state <= IDLE;
+                            control_state <= WAIT_LAST;
                         end else begin
                             bit_cnt <= '0;
                             row_cnt <= row_cnt + 1;
@@ -114,9 +114,12 @@ always_ff @(posedge clk) begin
                         bit_cnt <= bit_cnt + 1;
                         control_state <= TX;
                     end
+                end
+            end
 
-
-
+            WAIT_LAST: begin
+                if (blanking_pos) begin
+                    control_state <= IDLE;
                 end
             end
         endcase

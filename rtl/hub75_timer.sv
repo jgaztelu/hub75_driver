@@ -61,7 +61,9 @@ module hub75_timer #(
         if (!rst_n) begin
             cur_row <= '0;
         end else begin
-            if (new_row) begin
+            if (!i_timer_en) begin
+                cur_row <= '0;
+            end else if (new_row) begin
                 if (cur_row == out_rows_p-1) begin
                     cur_row <= '0;
                 end else begin
