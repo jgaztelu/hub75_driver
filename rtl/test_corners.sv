@@ -31,14 +31,14 @@ module test_corners #(
 			o_rd_data[1][2] <= '1;
 			o_rd_data[1][1] <= '0;
 			o_rd_data[1][0] <= '0;
-		end else if (i_rd_addr == (hpixel_p*vpixel_p-1)) begin	// Low left
+		end else if (i_rd_addr == (frame_size_p/segments_p)-hpixel_p) begin	// Low left
 			o_rd_data[0][2] <= '0;
 			o_rd_data[0][1] <= '1;
 			o_rd_data[0][0] <= '0;
 			o_rd_data[1][2] <= '0;
 			o_rd_data[1][1] <= '1;
 			o_rd_data[1][0] <= '0;
-		end else if (i_rd_addr == (hpixel_p*vpixel_p-1)) begin // Low right
+		end else if (i_rd_addr == (frame_size_p/segments_p)-1) begin // Low right
 			o_rd_data[0][2] <= '0;
 			o_rd_data[0][1] <= '0;
 			o_rd_data[0][0] <= '1;
